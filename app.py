@@ -21,6 +21,12 @@ def webhook():
 
     webhook_message = json.loads(request.data)
 
+    if webhook_message['passphrase'] != config.WEBHOOK_PASSPHRASE:
+        return {
+            'code': 'error',
+            'message': 'wrong passphrase'
+        }
+
     price = webhook_message['strategy']['order_price']
     quantity = webhook_message['strategy']['order_contracts']
     symbol = webhook_message['ticker']
