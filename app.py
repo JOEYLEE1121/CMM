@@ -13,7 +13,6 @@ api = tradeapi.REST(config.API_KEY, config.API_SECRET,
 @app.route('/')
 def dashboard():
     orders = api.list_orders()
-    print(orders)
     return render_template('dashboard.html', alpaca_orders=orders)
 
 

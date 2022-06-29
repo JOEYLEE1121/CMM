@@ -15,6 +15,7 @@
         table {
             background: white;
             color: black;
+            margin: auto;
             border-radius: 10px;
         }
 
@@ -23,6 +24,7 @@
         }
 
         th {
+            padding: 10px;
             background: lightyellow;
         }
     </style>
@@ -30,8 +32,17 @@
 </head>
 <body>
     <h2>CMM Dashboard</h2>
-
+    <img>
     <table>
+        <tr>
+            <th>created</th>
+            <th>symbol</th>
+            <th>type</th>
+            <th>side</th>
+            <th>qty</th>
+            <th>limit price</th>
+            <th>filled price</th>
+        </tr>
         {% for order in alpaca_orders %}
             <tr>
                 <td>{{ order.created_at }}</td>
