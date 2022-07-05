@@ -9,6 +9,8 @@ app = Flask(__name__)
 api = tradeapi.REST(config.API_KEY, config.API_SECRET,
                     base_url="https://paper-api.alpaca.markets")
 
+DISCORD_URL = "https://discord.com/api/webhooks/993859661226840164/I8fTGIiwIssF7k9pTuAgtBoubXa3zG0PxPx7JsrgAdYV8mVcecUWJg1SGeRft_1IO5-3"
+
 
 @app.route('/')
 def dashboard():
@@ -35,4 +37,12 @@ def webhook():
     order = api.submit_order(symbol, quantity, side,
                              'limit', 'gtc', limit_price=price)
     print(order)
+
+    chat_message = {
+        "username": "strategyalert",
+        "content": f"bollinger band strategy triggered! {quantity} {symbol} at {price}"
+    }
+
+    requests.post(DISCORD_URL, json=chat_message)
+
     return webhook_message
