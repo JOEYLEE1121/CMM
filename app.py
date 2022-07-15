@@ -40,9 +40,9 @@ def webhook():
 
     chat_message = {
         "username": "strategyalert",
-        "content": f"우흥~ bollinger band strategy triggered! {quantity} {symbol} at {price}"
+        "content": f"bollinger band strategy triggered! {quantity} {symbol} at {price}"
     }
 
-    requests.post(DISCORD_URL, json=chat_message)
+    requests.post(config.DISCORD_URL, json=chat_message)
 
     return webhook_message
