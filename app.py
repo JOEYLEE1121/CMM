@@ -11,17 +11,31 @@ DISCORD_URL = os.environ['DISCORD_URL']
 WEBHOOK_PASSPHRASE = os.environ['WEBHOOK_PASSPHRASE']
 
 app = Flask(__name__)
-
 api = tradeapi.REST(API_KEY, API_SECRET,
                     base_url="https://paper-api.alpaca.markets")
 
-DISCORD_URL = DISCORD_URL
 
+logs = []
 
 @app.route('/')
 def dashboard():
     orders = api.list_orders()
     return render_template('dashboard.html', alpaca_orders=orders)
+
+@app.route('/logs')
+def logs_page():
+    return render_template('logs.html', logs=logs)
+
+def do_log(msg):
+
+    new_log = {'msg': msg, 'time': datetime.datetime.now()}
+
+    logs.append(new_log)
+
+    requests.post(DISCORD_URL, json={
+            "username" : "[LOG]",
+            "content": f"{new_log.time} {new_log.msg}",
+        })
 
 
 @app.route('/webhook', methods=['POST'])
@@ -30,6 +44,7 @@ def webhook():
     webhook_message = json.loads(request.data)
 
     if webhook_message['passphrase'] != WEBHOOK_PASSPHRASE:
+        do_log('wrong passphrase')
         return {
             'code': 'error',
             'message': 'wrong passphrase'
@@ -41,17 +56,20 @@ def webhook():
         symbol = webhook_message['ticker']
         side = webhook_message['strategy']['order_action']
     except:
-        requests.post(DISCORD_URL, json={
-            "username" : "Heroku Error",
-            "content": f"[webhook] {datetime.datetime.now()} cannot read json",
-        })
+        do_log('cannot read json')
         return {
             'code': 'error',
             'message': 'cannot read json'
         }
 
-    order = api.submit_order(symbol, quantity, side,
+    try:
+        order = api.submit_order(symbol, quantity, side,
                              'limit', 'gtc', limit_price=price)
+    except:
+        do_log('sth wrong with alpaca api')
+    finally:
+        do_log('order submitted')
+
     print(order)
 
     chat_message = {
