@@ -9,7 +9,7 @@ app = Flask(__name__)
 api = tradeapi.REST(config.API_KEY, config.API_SECRET,
                     base_url="https://paper-api.alpaca.markets")
 
-DISCORD_URL = "https://discord.com/api/webhooks/993859661226840164/I8fTGIiwIssF7k9pTuAgtBoubXa3zG0PxPx7JsrgAdYV8mVcecUWJg1SGeRft_1IO5-3"
+DISCORD_URL = config.DISCORD_URL
 
 
 @app.route('/')
