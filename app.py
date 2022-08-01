@@ -27,21 +27,21 @@ def logs_page():
     return render_template('logs.html', logs=logs)
 
 def do_log(msg):
-
-    new_log = {'msg': msg, 'time': datetime.datetime.now()}
+    t = datetime.datetime.now()
+    new_log = {'msg': msg, 'time': t}
 
     logs.append(new_log)
 
     requests.post(DISCORD_URL, json={
             "username" : "[LOG]",
-            "content": f"{new_log.time} {new_log.msg}",
+            "content": f"{t} {msg}",
         })
 
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-
     webhook_message = json.loads(request.data)
+    do_log(json.dumps(webhook_message))
 
     if webhook_message['passphrase'] != WEBHOOK_PASSPHRASE:
         do_log('wrong passphrase')
@@ -67,8 +67,11 @@ def webhook():
                              'limit', 'gtc', limit_price=price)
     except:
         do_log('sth wrong with alpaca api')
-    finally:
-        do_log('order submitted')
+        do_log(f'symbol:{symbol}, quantity:{quantity}, side:{side}, price:{price}')
+        return {
+            'code': 'error',
+            'message': 'sth wrong with alpaca api'
+        }
 
     print(order)
 
@@ -80,31 +83,3 @@ def webhook():
     requests.post(DISCORD_URL, json=chat_message)
 
     return webhook_message
-
-
-# https://tradingview-alpaca-cmm-webhook.herokuapp.com/webhook
-# {
-#     "passphrase": "abcdefgh",
-#     "time": "{{timenow}}",
-#     "exchange": "{{exchange}}",
-#     "ticker": "BTCUSD",
-#     "bar": {
-#         "time": "{{time}}",
-#         "open": {{open}},
-#         "high": {{high}},
-#         "low": {{low}},
-#         "close": {{close}},
-#         "volume": {{volume}}
-#     },
-#     "strategy": {
-#         "position_size": {{strategy.position_size}},
-#         "order_action": "{{strategy.order.action}}",
-#         "order_contracts": {{strategy.order.contracts}},
-#         "order_price": {{strategy.order.price}},
-#         "order_id": "{{strategy.order.id}}",
-#         "market_position": "{{strategy.market_position}}",
-#         "market_position_size": {{strategy.market_position_size}},
-#         "prev_market_position": "{{strategy.prev_market_position}}",
-#         "prev_market_position_size": {{strategy.prev_market_position_size}}
-#     }
-# }
