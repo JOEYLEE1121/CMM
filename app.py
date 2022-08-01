@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 import alpaca_trade_api as tradeapi
 import json
 import requests
+import datetime
 
 API_KEY = os.environ['API_KEY']
 API_SECRET = os.environ['API_SECRET']
@@ -40,6 +41,10 @@ def webhook():
         symbol = webhook_message['ticker']
         side = webhook_message['strategy']['order_action']
     except:
+        requests.post(DISCORD_URL, json={
+            "username" : "Heroku Error",
+            "content": f"[webhook] {datetime.datetime.now()} cannot read json",
+        })
         return {
             'code': 'error',
             'message': 'cannot read json'
