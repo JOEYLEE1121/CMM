@@ -34,10 +34,16 @@ def webhook():
             'message': 'wrong passphrase'
         }
 
-    price = webhook_message['strategy']['order_price']
-    quantity = webhook_message['strategy']['order_contracts']
-    symbol = webhook_message['ticker']
-    side = webhook_message['strategy']['order_action']
+    try:
+        price = webhook_message['strategy']['order_price']
+        quantity = webhook_message['strategy']['order_contracts']
+        symbol = webhook_message['ticker']
+        side = webhook_message['strategy']['order_action']
+    except:
+        return {
+            'code': 'error',
+            'message': 'cannot read json'
+        }
 
     order = api.submit_order(symbol, quantity, side,
                              'limit', 'gtc', limit_price=price)
@@ -52,13 +58,30 @@ def webhook():
 
     return webhook_message
 
-@app.route('/test')
-def test():
-    chat_message = {
-        "username": "strategyalert!",
-        "content": f"test msg from lemuel"
-    }
 
-    requests.post(DISCORD_URL, json=chat_message)
-
-    return "done!"
+# https://tradingview-alpaca-cmm-webhook.herokuapp.com/webhook
+# {
+#     "passphrase": "abcdefgh",
+#     "time": "{{timenow}}",
+#     "exchange": "{{exchange}}",
+#     "ticker": "BTCUSD",
+#     "bar": {
+#         "time": "{{time}}",
+#         "open": {{open}},
+#         "high": {{high}},
+#         "low": {{low}},
+#         "close": {{close}},
+#         "volume": {{volume}}
+#     },
+#     "strategy": {
+#         "position_size": {{strategy.position_size}},
+#         "order_action": "{{strategy.order.action}}",
+#         "order_contracts": {{strategy.order.contracts}},
+#         "order_price": {{strategy.order.price}},
+#         "order_id": "{{strategy.order.id}}",
+#         "market_position": "{{strategy.market_position}}",
+#         "market_position_size": {{strategy.market_position_size}},
+#         "prev_market_position": "{{strategy.prev_market_position}}",
+#         "prev_market_position_size": {{strategy.prev_market_position_size}}
+#     }
+# }
