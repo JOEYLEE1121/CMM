@@ -1,15 +1,20 @@
+import os
 from flask import Flask, render_template, request
 import alpaca_trade_api as tradeapi
-import config
 import json
 import requests
 
+API_KEY = os.environ['API_KEY']
+API_SECRET = os.environ['API_SECRET']
+DISCORD_URL = os.environ['DISCORD_URL']
+WEBHOOK_PASSPHRASE = os.environ['WEBHOOK_PASSPHRASE']
+
 app = Flask(__name__)
 
-api = tradeapi.REST(config.API_KEY, config.API_SECRET,
+api = tradeapi.REST(API_KEY, API_SECRET,
                     base_url="https://paper-api.alpaca.markets")
 
-DISCORD_URL = config.DISCORD_URL
+DISCORD_URL = DISCORD_URL
 
 
 @app.route('/')
@@ -23,7 +28,7 @@ def webhook():
 
     webhook_message = json.loads(request.data)
 
-    if webhook_message['passphrase'] != config.WEBHOOK_PASSPHRASE:
+    if webhook_message['passphrase'] != WEBHOOK_PASSPHRASE:
         return {
             'code': 'error',
             'message': 'wrong passphrase'
@@ -43,7 +48,7 @@ def webhook():
         "content": f"bollinger band strategy triggered! {quantity} {symbol} at {price}"
     }
 
-    requests.post(config.DISCORD_URL, json=chat_message)
+    requests.post(DISCORD_URL, json=chat_message)
 
     return webhook_message
 
@@ -54,6 +59,6 @@ def test():
         "content": f"test msg from lemuel"
     }
 
-    requests.post(config.DISCORD_URL, json=chat_message)
+    requests.post(DISCORD_URL, json=chat_message)
 
     return "done!"
