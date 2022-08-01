@@ -62,12 +62,13 @@ def webhook():
             'message': 'cannot read json'
         }
 
+    limit_price = round(price)
     try:
         order = api.submit_order(symbol, quantity, side,
-                             'limit', 'gtc', limit_price=price)
+                             'limit', 'gtc', limit_price)
     except:
         do_log('sth wrong with alpaca api')
-        do_log(f'symbol:{symbol}, quantity:{quantity}, side:{side}, price:{price}')
+        do_log(f'symbol:{symbol}, quantity:{quantity}, side:{side}, limit_price:{limit_price}')
         return {
             'code': 'error',
             'message': 'sth wrong with alpaca api'
