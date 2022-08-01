@@ -2,85 +2,72 @@ import os
 from flask import Flask, render_template, request
 import alpaca_trade_api as tradeapi
 import json
-import requests
-import datetime
+import discord as dc
+import logging
 
-API_KEY = os.environ['API_KEY']
-API_SECRET = os.environ['API_SECRET']
-DISCORD_URL = os.environ['DISCORD_URL']
-WEBHOOK_PASSPHRASE = os.environ['WEBHOOK_PASSPHRASE']
+logging.basicConfig(filename="static/app.log", level=logging.DEBUG)
+
+API_KEY = os.environ["API_KEY"]
+API_SECRET = os.environ["API_SECRET"]
+WEBHOOK_PASSPHRASE = os.environ["WEBHOOK_PASSPHRASE"]
 
 app = Flask(__name__)
-api = tradeapi.REST(API_KEY, API_SECRET,
-                    base_url="https://paper-api.alpaca.markets")
+api = tradeapi.REST(API_KEY, API_SECRET, base_url="https://paper-api.alpaca.markets")
 
 
-logs = []
-
-@app.route('/')
+@app.route("/")
 def dashboard():
     orders = api.list_orders()
-    return render_template('dashboard.html', alpaca_orders=orders)
-
-@app.route('/logs')
-def logs_page():
-    return render_template('logs.html', logs=logs)
-
-def do_log(msg):
-    t = datetime.datetime.now()
-    new_log = {'msg': msg, 'time': t}
-
-    logs.append(new_log)
-
-    requests.post(DISCORD_URL, json={
-            "username" : "[LOG]",
-            "content": f"{t} {msg}",
-        })
+    return render_template("dashboard.html", alpaca_orders=orders)
 
 
-@app.route('/webhook', methods=['POST'])
+@app.route("/logs")
+def logs():
+    return app.send_static_file("app.log")
+
+
+@app.route("/webhook", methods=["POST"])
 def webhook():
-    webhook_message = json.loads(request.data)
-    do_log(json.dumps(webhook_message))
+    data = json.loads(request.data)
+    data_str = json.dumps(data, indent=4)
+    logging.info(data_str)
+    dc.toast(":incoming_envelope:\n```json\n{}```".format(data_str))
 
-    if webhook_message['passphrase'] != WEBHOOK_PASSPHRASE:
-        do_log('wrong passphrase')
-        return {
-            'code': 'error',
-            'message': 'wrong passphrase'
-        }
+    # check passphrase
+    if data["passphrase"] != WEBHOOK_PASSPHRASE:
+        logging.error("Wrong passphrase")
+        logging.info("Exiting...")
+        return {"code": "error", "message": "wrong passphrase"}
 
+    # read incoming JSON
     try:
-        price = webhook_message['strategy']['order_price']
-        quantity = webhook_message['strategy']['order_contracts']
-        symbol = webhook_message['ticker']
-        side = webhook_message['strategy']['order_action']
+        price = data["strategy"]["order_price"]
+        quantity = data["strategy"]["order_contracts"]
+        symbol = data["ticker"]
+        side = data["strategy"]["order_action"]
     except:
-        do_log('cannot read json')
-        return {
-            'code': 'error',
-            'message': 'cannot read json'
-        }
+        logging.fatal("Cannot read incoming JSON")
+        return {"code": "error", "message": "cannot read json"}
 
+    # send req to Alpaca
     limit_price = round(price)
     try:
-        order = api.submit_order(symbol, quantity, side,
-                             'limit', 'gtc', limit_price)
+        logging.info(
+            "Submitting order to Alpaca - symbol={} quantity={} side={} limit_price={}".format(
+                symbol, quantity, side, limit_price
+            )
+        )
+        order = api.submit_order(symbol, quantity, side, "limit", "gtc", limit_price)
+        logging.info("Got order back from Alpaca")
+        logging.info(order)
+        dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order))
     except:
-        do_log('sth wrong with alpaca api')
-        do_log(f'symbol:{symbol}, quantity:{quantity}, side:{side}, limit_price:{limit_price}')
-        return {
-            'code': 'error',
-            'message': 'sth wrong with alpaca api'
-        }
+        logging.error("Alpaca responded with error")
+        logging.error(order)
+        return {"code": "error", "message": "sth wrong with alpaca api"}
 
-    print(order)
+    dc.toast(
+        ":white_check_mark: {} {} {} at {}".format(side, quantity, symbol, limit_price)
+    )
 
-    chat_message = {
-        "username": "strategyalert",
-        "content": f"bollinger band strategy triggered! {quantity} {symbol} at {price}"
-    }
-
-    requests.post(DISCORD_URL, json=chat_message)
-
-    return webhook_message
+    return "good"
