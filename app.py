@@ -46,3 +46,14 @@ def webhook():
     requests.post(config.DISCORD_URL, json=chat_message)
 
     return webhook_message
+
+@app.route('/test')
+def test():
+    chat_message = {
+        "username": "strategyalert!",
+        "content": f"test msg from lemuel"
+    }
+
+    requests.post(config.DISCORD_URL, json=chat_message)
+
+    return "done!"
