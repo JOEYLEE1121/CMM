@@ -1,0 +1,25 @@
+{
+    "passphrase": "abcdefgh",
+    "time": "2022-08-01T06:59:00Z",
+    "exchange": "BINANCE",
+    "ticker": "BTCUSD",
+    "bar": {
+        "time": "2022-08-01T06:59:00Z",
+        "open": 23218.72,
+        "high": 23218.72,
+        "low": 23218.72,
+        "close": 23218.72,
+        "volume": 0.00081
+    },
+    "strategy": {
+        "position_size": -1,
+        "order_action": "sell",
+        "order_contracts": 2,
+        "order_price": 23218.72,
+        "order_id": "BBandSE",
+        "market_position": "short",
+        "market_position_size": 1,
+        "prev_market_position": "long",
+        "prev_market_position_size": 1
+    }
+}
