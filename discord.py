@@ -26,3 +26,5 @@ def toast(msg, name) -> None:
         requests.post(DISCORD_URL_DIV, json={"username": "DIV alert", "content": msg})
     elif (name == "CME"):
         requests.post(DISCORD_URL_CME, json={"username": "CME alert", "content": msg})
+    else:
+        requests.post(DISCORD_URL, json={"username": "Other alert", "content": msg})
