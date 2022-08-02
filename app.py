@@ -41,6 +41,7 @@ def webhook():
 
     # read incoming JSON
     try:
+        name = data["strategyName"]
         price = data["strategy"]["order_price"]
         quantity = data["strategy"]["order_contracts"]
         symbol = data["ticker"]
@@ -67,7 +68,7 @@ def webhook():
         return {"code": "error", "message": "sth wrong with alpaca api"}
 
     dc.toast(
-        ":white_check_mark: {} {} {} at {}".format(side, quantity, symbol, limit_price)
+        ":white_check_mark: strategy {} triggered: {} {} {} at {}".format(name, side, quantity, symbol, limit_price)
     )
 
     return "good"
