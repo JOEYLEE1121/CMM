@@ -61,14 +61,14 @@ def webhook():
         order = api.submit_order(symbol, quantity, side, "limit", "gtc", limit_price)
         logging.info("Got order back from Alpaca")
         logging.info(order)
-        dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order), name)
+        dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order), data["strategyName"])
     except:
         logging.error("Alpaca responded with error")
         logging.error(order)
         return {"code": "error", "message": "sth wrong with alpaca api"}
 
     dc.toast(
-        ":white_check_mark: strategy {} triggered: {} {} {} at {}".format(name, side, quantity, symbol, limit_price), name
+        ":white_check_mark: strategy {} triggered: {} {} {} at {}".format(name, side, quantity, symbol, limit_price), data["strategyName"]
     )
 
     return "good"
