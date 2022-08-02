@@ -68,7 +68,7 @@ def webhook():
         return {"code": "error", "message": "sth wrong with alpaca api"}
 
     dc.toast(
-        ":white_check_mark: strategy {} triggered: {} {} {} at {}".format(name, side, quantity, symbol, limit_price)
+        ":white_check_mark: strategy {} triggered: {} {} {} at {}".format(name, side, quantity, symbol, limit_price), name
     )
 
     return "good"
