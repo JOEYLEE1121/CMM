@@ -10,41 +10,41 @@ DISCORD_URL_DIV = os.environ["DISCORD_URL_DIV"]
 DISCORD_URL_CME = os.environ["DISCORD_URL_CME"]
 
 # for short msg
-def toast(msg, name) -> None:
-    return msg
+def toast(msg, data, name) -> None:
+
     if (name == "OB"):
         requests.post(DISCORD_URL_OB, json={"username": "OB alert", "content": msg})
 
     elif (name == "CP"):
 
-        if (msg["strategy"]["order_id"] == "Bullish Engulfing"):
+        if (data["strategy"]["order_id"] == "Bullish Engulfing"):
             requests.post(DISCORD_URL_CP, json={"username": "Bullish Engulfing alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Bearish Engulfing"):
+        elif (data["strategy"]["order_id"] == "Bearish Engulfing"):
             requests.post(DISCORD_URL_CP, json={"username": "Bearish Engulfing alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Piercing Pattern"):
+        elif (data["strategy"]["order_id"] == "Piercing Pattern"):
             requests.post(DISCORD_URL_CP, json={"username": "Piercing Pattern alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Inverted Hammer"):
+        elif (data["strategy"]["order_id"] == "Inverted Hammer"):
             requests.post(DISCORD_URL_CP, json={"username": "Inverted Hammer alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Bullish Harami Cross"):
+        elif (data["strategy"]["order_id"] == "Bullish Harami Cross"):
             requests.post(DISCORD_URL_CP, json={"username": "Bullish Harami Cross alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Bearish Harami Cross"):
+        elif (data["strategy"]["order_id"] == "Bearish Harami Cross"):
             requests.post(DISCORD_URL_CP, json={"username": "Bearish Harami Cross alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Hammer"):
+        elif (data["strategy"]["order_id"] == "Hammer"):
             requests.post(DISCORD_URL_CP, json={"username": "Hammer alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Dark Cloud Cover"):
+        elif (data["strategy"]["order_id"] == "Dark Cloud Cover"):
             requests.post(DISCORD_URL_CP, json={"username": "Dark Cloud Cover alert", "content": msg})            
 
-        elif (msg["strategy"]["order_id"] == "Hanging Man"):
+        elif (data["strategy"]["order_id"] == "Hanging Man"):
             requests.post(DISCORD_URL_CP, json={"username": "Hanging Man alert", "content": msg})
 
-        elif (msg["strategy"]["order_id"] == "Shooting Star"):
+        elif (data["strategy"]["order_id"] == "Shooting Star"):
             requests.post(DISCORD_URL_CP, json={"username": "Shooting Star alert", "content": msg})
 
     elif (name == "RSI"):
