@@ -10,53 +10,24 @@ DISCORD_URL_DIV = os.environ["DISCORD_URL_DIV"]
 DISCORD_URL_CME = os.environ["DISCORD_URL_CME"]
 
 # for short msg
-def toast(msg, data, name) -> None:
+def toast(msg, data) -> None:
 
-    if (name == "OB"):
+    if (data["strateyName"] == "OB"):
         requests.post(DISCORD_URL_OB, json={"username": "OB alert", "content": msg})
 
-    elif (name == "CP"):
+    elif (data["strateyName"] == "CP"):
+        requests.post(DISCORD_URL_CP, json={"username": "{} alert".format(data["strategy"]["order_id"]), "content": msg})
 
-        if (data["strategy"]["order_id"] == "Bullish Engulfing"):
-            requests.post(DISCORD_URL_CP, json={"username": "Bullish Engulfing alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Bearish Engulfing"):
-            requests.post(DISCORD_URL_CP, json={"username": "Bearish Engulfing alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Piercing Pattern"):
-            requests.post(DISCORD_URL_CP, json={"username": "Piercing Pattern alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Inverted Hammer"):
-            requests.post(DISCORD_URL_CP, json={"username": "Inverted Hammer alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Bullish Harami Cross"):
-            requests.post(DISCORD_URL_CP, json={"username": "Bullish Harami Cross alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Bearish Harami Cross"):
-            requests.post(DISCORD_URL_CP, json={"username": "Bearish Harami Cross alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Hammer"):
-            requests.post(DISCORD_URL_CP, json={"username": "Hammer alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Dark Cloud Cover"):
-            requests.post(DISCORD_URL_CP, json={"username": "Dark Cloud Cover alert", "content": msg})            
-
-        elif (data["strategy"]["order_id"] == "Hanging Man"):
-            requests.post(DISCORD_URL_CP, json={"username": "Hanging Man alert", "content": msg})
-
-        elif (data["strategy"]["order_id"] == "Shooting Star"):
-            requests.post(DISCORD_URL_CP, json={"username": "Shooting Star alert", "content": msg})
-
-    elif (name == "RSI"):
+    elif (data["strateyName"] == "RSI"):
         requests.post(DISCORD_URL_RSI, json={"username": "RSI alert", "content": msg})    
  
-    elif (name == "FIB"):
+    elif (data["strateyName"] == "FIB"):
         requests.post(DISCORD_URL_FIB, json={"username": "FIB alert", "content": msg})
  
-    elif (name == "DIV"):
+    elif (data["strateyName"] == "DIV"):
         requests.post(DISCORD_URL_DIV, json={"username": "DIV alert", "content": msg})
  
-    elif (name == "CME"):
+    elif (data["strateyName"] == "CME"):
         requests.post(DISCORD_URL_CME, json={"username": "CME alert", "content": msg})
  
     else:
