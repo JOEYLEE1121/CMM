@@ -1,4 +1,5 @@
 {
+    "strategyName = "Strategy Name",
     "passphrase": "abcdefgh",
     "time": "{{timenow}}",
     "exchange": "{{exchange}}",
