@@ -31,7 +31,7 @@ def webhook():
     data = json.loads(request.data)
     data_str = json.dumps(data, indent=4)
     logging.info(data_str)
-    dc.toast(":incoming_envelope:\n```json\n{}```".format(data_str), data["strategyName"])
+    dc.toast(":incoming_envelope:\n```json\n{}```".format(data_str), data)
 
     # check passphrase
     if data["passphrase"] != WEBHOOK_PASSPHRASE:
@@ -61,7 +61,7 @@ def webhook():
         order = api.submit_order(symbol, quantity, side, "limit", "gtc", limit_price)
         logging.info("Got order back from Alpaca")
         logging.info(order)
-        dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order), data["strategyName"])
+        dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order), data)
     except:
         logging.error("Alpaca responded with error")
         logging.error(order)

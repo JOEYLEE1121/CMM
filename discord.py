@@ -12,9 +12,8 @@ DISCORD_URL_CME = os.environ["DISCORD_URL_CME"]
 
 # for short msg
 def toast(msg, name) -> None:
-    if (name == "BB"):
-        requests.post(DISCORD_URL, json={"username": "BB alert", "content": msg})
-    elif (name == "OB"):
+    
+    if (name == "OB"):
         requests.post(DISCORD_URL_OB, json={"username": "OB alert", "content": msg})
     elif (name == "CP"):
         requests.post(DISCORD_URL_CP, json={"username": "CP alert", "content": msg})
@@ -27,4 +26,4 @@ def toast(msg, name) -> None:
     elif (name == "CME"):
         requests.post(DISCORD_URL_CME, json={"username": "CME alert", "content": msg})
     else:
-        requests.post(DISCORD_URL, json={"username": "Other alert", "content": msg})
+        requests.post(DISCORD_URL, json={"username": "{} alert LOG".format(name["StrategyName"]), "content": msg})
