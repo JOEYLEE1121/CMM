@@ -11,25 +11,23 @@ DISCORD_URL_CME = os.environ["DISCORD_URL_CME"]
 
 # for short msg
 def toast(msg, data) -> None:
-    
-    requests.post(DISCORD_URL, json={"username": "OB alert", "content": "{}".format(msg)})
 
-    if (data["strateyName"] == "OB"):
+    if (data["strategyName"] == "OB"):
         requests.post(DISCORD_URL_OB, json={"username": "OB alert", "content": "{}".format(msg)})
 
-    elif (data["strateyName"] == "CP"):
+    elif (data["strategyName"] == "CP"):
         requests.post(DISCORD_URL_CP, json={"username": "{} alert".format(data["strategy"]["order_id"]), "content": "{}".format(msg)})
 
-    elif (data["strateyName"] == "RSI"):
+    elif (data["strategyName"] == "RSI"):
         requests.post(DISCORD_URL_RSI, json={"username": "RSI alert", "content": "{}".format(msg)})    
  
-    elif (data["strateyName"] == "FIB"):
+    elif (data["strategyName"] == "FIB"):
         requests.post(DISCORD_URL_FIB, json={"username": "FIB alert", "content": "{}".format(msg)})
  
-    elif (data["strateyName"] == "DIV"):
+    elif (data["strategyName"] == "DIV"):
         requests.post(DISCORD_URL_DIV, json={"username": "DIV alert", "content": "{}".format(msg)})
  
-    elif (data["strateyName"] == "CME"):
+    elif (data["strategyName"] == "CME"):
         requests.post(DISCORD_URL_CME, json={"username": "CME alert", "content": "{}".format(msg)})
  
     else:

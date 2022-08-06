@@ -66,6 +66,7 @@ def webhook():
 
         # for debugging webhooks
         # dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order), data)
+    
     except:
         logging.error("Alpaca responded with error")
         logging.error(order)
@@ -73,7 +74,7 @@ def webhook():
 
     
     dc.toast(
-        ":white_check_mark: strategy {} triggered: {} {} {} at {}".format(name, side, quantity, symbol, limit_price), data
+        ":white_check_mark: strategy {} triggered!: {} {} {} at {}".format(name, side, quantity, symbol, limit_price), data
     )
 
     return "good"
