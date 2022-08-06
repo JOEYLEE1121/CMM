@@ -1,5 +1,5 @@
 {
-    "strategyName = "Strategy Name",
+    "strategyName = "CP",
     "passphrase": "abcdefgh",
     "time": "{{timenow}}",
     "exchange": "{{exchange}}",
@@ -13,14 +13,14 @@
         "volume": {{volume}}
     },
     "strategy": {
-        "position_size": {{strategy.position_size}},
-        "order_action": "{{strategy.order.action}}",
-        "order_contracts": {{strategy.order.contracts}},
+        "position_size": 0.01,
+        "order_action": "buy",
+        "order_contracts": "0.01",
         "order_price": {{strategy.order.price}},
-        "order_id": "{{strategy.order.id}}",
-        "market_position": "{{strategy.market_position}}",
-        "market_position_size": {{strategy.market_position_size}},
-        "prev_market_position": "{{strategy.prev_market_position}}",
-        "prev_market_position_size": {{strategy.prev_market_position_size}}
+        "order_id": "Bullish Engulfing",
+        "market_position": "0.01",
+        "market_position_size": "0.01",
+        "prev_market_position": "",
+        "prev_market_position_size": ""
     }
 }
