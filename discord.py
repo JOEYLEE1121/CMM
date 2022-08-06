@@ -11,6 +11,7 @@ DISCORD_URL_CME = os.environ["DISCORD_URL_CME"]
 
 # for short msg
 def toast(msg, data) -> None:
+    print("brah")
     print(data)
     if (data["strateyName"] == "OB"):
         requests.post(DISCORD_URL_OB, json={"username": "OB alert", "content": msg})
