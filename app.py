@@ -64,7 +64,7 @@ def webhook():
         logging.info("Got order back from Alpaca")
         logging.info(order)
 
-        # for debugging webhooksL
+        # for debugging webhooks
         # dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order), data)
     except:
         logging.error("Alpaca responded with error")

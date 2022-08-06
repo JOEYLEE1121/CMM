@@ -32,3 +32,5 @@ def toast(msg, data) -> None:
  
     else:
         requests.post(DISCORD_URL, json={"username": "Other alert", "content": msg})
+    
+    return msg
