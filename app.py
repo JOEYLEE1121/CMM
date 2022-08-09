@@ -5,24 +5,17 @@ import json
 import discord as dc
 import logging
 
-logging.basicConfig(filename="static/app.log", level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 from env import API_KEY, API_SECRET, WEBHOOK_PASSPHRASE
 
 app = Flask(__name__)
 api = tradeapi.REST(API_KEY, API_SECRET, base_url="https://paper-api.alpaca.markets")
 
-
 @app.route("/")
 def dashboard():
     orders = api.list_orders()
     return render_template("dashboard.html", alpaca_orders=orders)
-
-
-@app.route("/logs")
-def logs():
-    return app.send_static_file("app.log")
-
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
