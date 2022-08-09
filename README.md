@@ -4,10 +4,24 @@
 
 Run `dev.sh`.
 
+### Environmental Variables
+
+Create a `.env` at root directory containing the environmental variables needed.
+
+## Deployment
+
+### Heroku
+
+Remember to configure the environmental variables same as `.env` and additionally: 
+```env
+FLASK_APP=app.py
+FLASK_ENV=production
+```
+
 ## Reference
 ```json
 {
-	"strategyName":"CP",
+    "strategyName":"CP",
     "passphrase": "abcdefgh",
     "time": "2022-07-02T01:44:17Z",
     "exchange": "BINANCE",
