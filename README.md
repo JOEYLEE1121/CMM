@@ -1,3 +1,11 @@
+# CMM
+
+## Development
+
+Run `dev.sh`.
+
+## Reference
+```json
 {
 	"strategyName":"CP",
     "passphrase": "abcdefgh",
@@ -24,3 +32,4 @@
         "prev_market_position_size": 0.1
     }
 }
+```

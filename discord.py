@@ -1,13 +1,7 @@
 import os
 import requests
 
-DISCORD_URL = os.environ["DISCORD_URL"]
-DISCORD_URL_OB = os.environ["DISCORD_URL_OB"]
-DISCORD_URL_CP = os.environ["DISCORD_URL_CP"]
-DISCORD_URL_RSI = os.environ["DISCORD_URL_RSI"]
-DISCORD_URL_FIB = os.environ["DISCORD_URL_FIB"]
-DISCORD_URL_DIV = os.environ["DISCORD_URL_DIV"]
-DISCORD_URL_CME = os.environ["DISCORD_URL_CME"]
+from env import DISCORD_URL, DISCORD_URL_OB, DISCORD_URL_CP, DISCORD_URL_RSI, DISCORD_URL_FIB, DISCORD_URL_DIV, DISCORD_URL_CME
 
 # for short msg
 def toast(msg, data) -> None:

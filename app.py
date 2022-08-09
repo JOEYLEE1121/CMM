@@ -7,9 +7,7 @@ import logging
 
 logging.basicConfig(filename="static/app.log", level=logging.DEBUG)
 
-API_KEY = os.environ["API_KEY"]
-API_SECRET = os.environ["API_SECRET"]
-WEBHOOK_PASSPHRASE = os.environ["WEBHOOK_PASSPHRASE"]
+from env import API_KEY, API_SECRET, WEBHOOK_PASSPHRASE
 
 app = Flask(__name__)
 api = tradeapi.REST(API_KEY, API_SECRET, base_url="https://paper-api.alpaca.markets")
