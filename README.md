@@ -36,7 +36,7 @@ Remember to configure the environmental variables same as `.env` and additionall
 
 ```env
 FLASK_APP=app.py
-FLASK_ENV=production
+FLASK_DEBUG=0
 ```
 
 ## Reference
