@@ -37,6 +37,7 @@ def webhook():
         qty = data["order_contracts"]
         price = data["order_price"]
         do_trade = data["do_trade"]
+        order_id = data["order_id"]
     except:
         raise BadIncomingJSON()
 
@@ -46,7 +47,7 @@ def webhook():
     if do_trade:
         do_alpaca_trade(sym, side, qty, price)
 
-    dc.strategy_alert(strat, side, qty, sym, price)
+    dc.strategy_alert(strat, side, qty, sym, price, order_id)
 
     return "Ok.", 200
 
