@@ -1,3 +1,4 @@
 __pycache__/
 static/app.log
 .env
+.cmm
