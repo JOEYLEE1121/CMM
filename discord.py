@@ -28,7 +28,7 @@ def strategy_alert(
         DC_URL[strat],
         json={
             "username": "{}".format(order_id),
-            "content": ":bar_chart: **strategy triggered** ```sym={}\nqty={}\nsym={}\nprice={}```".format(sym, qty, side, price),
+            "content": ":bar_chart: **strategy triggered** ```sym={}\nqty={}\nside={}\nprice={}```".format(sym, qty, side, price),
         },
     )
 
