@@ -1,3 +1,4 @@
+from this import d
 import requests
 
 from env import (
@@ -26,11 +27,13 @@ def strategy_alert(
     requests.post(
         DC_URL[strat],
         json={
-            "username": "{} alert".format(order_id),
-            "content": "{} {} {} at {}".format(side, qty, sym, price),
+            "username": "{}".format(order_id),
+            "content": ":bar_chart: **strategy triggered** ```sym={}\nqty={}\nsym={}\nprice={}```".format(sym, qty, side, price),
         },
     )
 
-
-def toast(msg: str) -> None:
-    requests.post(DISCORD_URL, json={"username": "toast", "content": msg})
+def toast(name: str = "toast", msg: str = "", strat: str = None) -> None:
+    if strat:
+        requests.post(DC_URL[strat], json={"username": name, "content": msg})
+    else:
+        requests.post(DISCORD_URL, json={"username": name, "content": msg})

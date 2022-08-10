@@ -44,27 +44,24 @@ def webhook():
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
 
-    if do_trade:
-        do_alpaca_trade(sym, side, qty, price)
-
     dc.strategy_alert(strat, side, qty, sym, price, order_id)
 
-    return "Ok.", 200
-
-
-def do_alpaca_trade(sym, side, qty, price):
-    limit_price = round(price)
-    logging.info(
-        "Submitting order to Alpaca - symbol={} quantity={} side={} limit_price={}".format(
+    if do_trade:
+        limit_price = round(price)
+        dc.toast("Alpaca", ":arrows_counterclockwise: **submitting order** ```sym={}\nqty={}\nside={}\nlimit_price={}```".format(
             sym, qty, side, limit_price
-        )
-    )
-    order = api.submit_order(sym, qty, side, "limit", "gtc", limit_price)
+        ) , strat)
 
-    # for debugging webhooks
-    dc.toast(":ok: Got response `order` from Alpaca\n```json\n{}```".format(order))
-    logging.info("Got order back from Alpaca")
-    logging.info(order)
+        try:
+            order = api.submit_order(sym, qty, side, "limit", "gtc", limit_price)
+        except tradeapi.rest.APIError as e:
+            err_msg = str(e)
+            dc.toast("Alpaca", ":warning: **order submission failed** ```{}```".format(err_msg), strat)
+            return err_msg, e.status_code
+            
+        dc.toast("Alpaca", ":white_check_mark: **order successfully submitted** ```json\n{}```".format(order), strat)
+
+    return "Ok.", 200
 
 class UnauthorizedRequest(werkzeug.exceptions.HTTPException):
     code = 401
@@ -81,9 +78,3 @@ class BadIncomingJSON(werkzeug.exceptions.HTTPException):
 @app.errorhandler(BadIncomingJSON)
 def handle_bad_incoming_json(e):
     return e.description, e.code
-
-@app.errorhandler(tradeapi.rest.APIError)
-def handle_alpaca_api_error(e):
-    err_msg = str(e)
-    dc.toast(":warning: Got error `{}` from Alpaca!".format(err_msg))
-    return err_msg, e.status_code
