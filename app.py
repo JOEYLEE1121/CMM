@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, abort
 import werkzeug
 import alpaca_trade_api as tradeapi
 import json
-from dc import strategy_alert, WEBHOOKS, file_from_text
+from dc import WEBHOOKS, TOAST, strategy_alert, file_from_text
 from helper import ascii_table
 import logging
 
@@ -25,7 +25,7 @@ def webhook():
     try:
         data = json.loads(request.data)
     except:
-        raise BadIncomingJSON()
+        raise BadIncomingJSON(request.data.decode("utf-8"))
 
     data_str = json.dumps(data, indent=4)
     logging.info(data_str)
@@ -40,7 +40,7 @@ def webhook():
         do_trade = data["do_trade"]
         order_id = data["order_id"]
     except:
-        raise BadIncomingJSON()
+        raise BadIncomingJSON(data_str)
 
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
@@ -96,7 +96,11 @@ class BadIncomingJSON(werkzeug.exceptions.HTTPException):
     code = 400
     description = "Unable to parse incoming JSON."
 
+    def __init__(self, json):
+        self.json = json
+
 
 @app.errorhandler(BadIncomingJSON)
 def handle_bad_incoming_json(e):
+    TOAST.send(username="Error", content=":warning: **BadIncomingJSON** ```json\n{}```".format(e.json))
     return e.description, e.code
