@@ -1,4 +1,5 @@
-import discord
+import requests
+from discord import Webhook, RequestsWebhookAdapter, File
 from helper import ascii_table
 from io import StringIO
 
@@ -12,13 +13,13 @@ from env import (
     DISCORD_URL_CME,
 )
 
-TOAST = discord.Webhook.from_url(DISCORD_URL, adapter=discord.RequestsWebhookAdapter())
-OB = discord.Webhook.from_url(DISCORD_URL_OB, adapter=discord.RequestsWebhookAdapter())
-CP = discord.Webhook.from_url(DISCORD_URL_CP, adapter=discord.RequestsWebhookAdapter())
-RSI = discord.Webhook.from_url(DISCORD_URL_RSI, adapter=discord.RequestsWebhookAdapter())
-FIB = discord.Webhook.from_url(DISCORD_URL_FIB, adapter=discord.RequestsWebhookAdapter())
-DIV = discord.Webhook.from_url(DISCORD_URL_DIV, adapter=discord.RequestsWebhookAdapter())
-CME = discord.Webhook.from_url(DISCORD_URL_CME, adapter=discord.RequestsWebhookAdapter())
+TOAST = Webhook.from_url(DISCORD_URL, adapter=RequestsWebhookAdapter())
+OB = Webhook.from_url(DISCORD_URL_OB, adapter=RequestsWebhookAdapter())
+CP = Webhook.from_url(DISCORD_URL_CP, adapter=RequestsWebhookAdapter())
+RSI = Webhook.from_url(DISCORD_URL_RSI, adapter=RequestsWebhookAdapter())
+FIB = Webhook.from_url(DISCORD_URL_FIB, adapter=RequestsWebhookAdapter())
+DIV = Webhook.from_url(DISCORD_URL_DIV, adapter=RequestsWebhookAdapter())
+CME = Webhook.from_url(DISCORD_URL_CME, adapter=RequestsWebhookAdapter())
 
 WEBHOOKS = {
     'OB' : OB,
@@ -31,7 +32,7 @@ WEBHOOKS = {
 
 def file_from_text(text: str, filename: str) -> None:
     with StringIO(text) as f:
-        my_file = discord.File(f, filename)
+        my_file = File(f, filename)
         return my_file
 
 def strategy_alert(strat: str, side: str, qty: float, sym: str, price: float, username: str) -> None:
