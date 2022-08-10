@@ -3,3 +3,5 @@ gunicorn
 alpaca-trade-api
 requests
 python-dotenv
+table2ascii
+discord.py
