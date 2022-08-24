@@ -3,6 +3,7 @@ import werkzeug
 import alpaca_trade_api as tradeapi
 import json
 from dc import WEBHOOKS, TOAST, strategy_alert, file_from_text
+from gsheet import log2gsheet
 from helper import ascii_table
 import logging
 
@@ -45,6 +46,7 @@ def webhook():
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
 
+    log2gsheet(strat, side, qty, sym, price, order_id, data_str)
     strategy_alert(strat, side, qty, sym, price, order_id)
 
     if do_trade:
