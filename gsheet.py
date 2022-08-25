@@ -1,6 +1,15 @@
-from env import GSHEET_ENDPOINT
-import requests
+from env import GSHEET_ID
+from datetime import datetime
+import pytz
+import gspread
+
+gc = gspread.service_account("./.private_keys/service_account.json")
+
+ss = gc.open_by_key(GSHEET_ID)
+ws = ss.worksheet("Log")
 
 def log2gsheet(strat, side, qty, sym, price, order_id, raw_data):
-    r = requests.post(GSHEET_ENDPOINT, json={"strat": strat, "side": side, "qty": qty, "sym": sym, "price": price, "order_id": order_id, "raw_data": raw_data})
-    print(f"[log2gsheet] {r.status_code} {r.text}")
+    tz_HK = pytz.timezone('Asia/Hong_Kong') 
+    dtnow_HK = datetime.now(tz_HK)
+    dtnow_HK_str = dtnow_HK.strftime("%Y-%m-%d %H:%M:%S")
+    ws.append_row([dtnow_HK_str, strat, side, qty, sym, price, order_id, raw_data])
