@@ -1,9 +1,10 @@
-from env import GSHEET_ID
+from env import GSHEET_ID, GCREDS
+import json
 from datetime import datetime
 import pytz
 import gspread
 
-gc = gspread.service_account("./.private_keys/service_account.json")
+gc = gspread.service_account_from_dict(json.loads(GCREDS))
 
 ss = gc.open_by_key(GSHEET_ID)
 ws = ss.worksheet("Log")
