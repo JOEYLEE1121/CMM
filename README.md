@@ -1,5 +1,7 @@
 # CMM
 
+This is a cloud instance, currently deployed onto Heroku. It has an endpoint which accepts incoming POST requests from Trading View alerts. It then log these alerts onto a Google Sheet via a Google Script web app instance, as well as sending webhook messages to Discord's API to send bot messages to corresponding channels. Additionally, it sends trade orders to Alpaca's paper trading API.
+
 ## Development
 
 ### Python Virtual Environment
@@ -8,7 +10,9 @@ Create a `.cmm` virtual environment. Activate the environment, and then install 
 
 ### Starting Flask
 
-Run `dev.sh`.
+On MacOS or Linux, run `dev.sh`.
+
+On Windows, run `dev_win.cmd`.
 
 ### Environmental Variables
 
