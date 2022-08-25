@@ -3,3 +3,4 @@ static/app.log
 .env
 .cmm
 .ve
+.private_keys/
