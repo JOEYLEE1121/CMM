@@ -1,6 +1,6 @@
 # CMM
 
-This is a cloud instance, currently deployed onto Heroku. It has an endpoint which accepts incoming POST requests from Trading View alerts. It then log these alerts onto a Google Sheet via a Google Script web app instance, as well as sending webhook messages to Discord's API to send bot messages to corresponding channels. Additionally, it sends trade orders to Alpaca's paper trading API.
+This is a cloud instance, currently deployed onto Heroku. It has an endpoint which accepts incoming POST requests from Trading View alerts. It then log these alerts onto a Google Sheet, as well as sending webhook messages to Discord's API to send bot messages to corresponding channels. Additionally, it sends trade orders to Alpaca's paper trading API.
 
 ## Development
 
@@ -30,7 +30,11 @@ DISCORD_URL_RSI=
 DISCORD_URL_FIB=
 DISCORD_URL_DIV=
 DISCORD_URL_CME=
-GSHEET_ENDPOINT=
+GSHEET_ID=
+GCREDS='{
+    "type": "service_account",
+    ...
+}'
 ```
 
 ## Deployment
@@ -43,6 +47,7 @@ Remember to configure the environmental variables same as `.env` and additionall
 FLASK_APP=app.py
 FLASK_DEBUG=0
 ```
+Also note that there is no need to include the enclosing quotes `'` for `GCREDS` on the Heroku Config Vars section.
 
 ## Reference
 
