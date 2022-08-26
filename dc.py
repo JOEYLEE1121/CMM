@@ -23,25 +23,32 @@ DIV = Webhook.from_url(DISCORD_URL_DIV, adapter=RequestsWebhookAdapter())
 CME = Webhook.from_url(DISCORD_URL_CME, adapter=RequestsWebhookAdapter())
 
 WEBHOOKS = {
-    'OB' : OB,
-    'CP' : CP,
-    'RSI' : RSI,
-    'FIB' : FIB,
-    'DIV' : DIV,
-    'CME' : CME,
+    "OB": OB,
+    "CP": CP,
+    "RSI": RSI,
+    "FIB": FIB,
+    "DIV": DIV,
+    "CME": CME,
 }
+
 
 def file_from_text(text: str, filename: str) -> None:
     with StringIO(text) as f:
         my_file = File(f, filename)
         return my_file
 
+
 def order_alert(order: Order) -> None:
     WEBHOOKS[order.strategy].send(
         username=order.id,
         content=":bar_chart: **strategy triggered** ```{}```".format(
             ascii_table(
-                {"Symbol": order.symbol, "Quantity": order.quantity, "Side": order.side, "Price": order.price}
+                {
+                    "Symbol": order.symbol,
+                    "Quantity": order.quantity,
+                    "Side": order.side,
+                    "Price": order.price,
+                }
             )
         ),
     )

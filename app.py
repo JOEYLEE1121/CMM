@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
     try:
@@ -24,7 +25,6 @@ def webhook():
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
 
-    
     gs.log_order(order)
     dc.order_alert(order)
 
@@ -32,6 +32,7 @@ def webhook():
         alpaca.submit_order(order)
 
     return "OK", 200
+
 
 class UnauthorizedRequest(werkzeug.exceptions.HTTPException):
     code = 401

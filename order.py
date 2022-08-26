@@ -8,5 +8,3 @@ class Order:
         self.price = data["order_price"]
         self.do_trade = data["do_trade"]
         self.raw_data = data
-
-        
