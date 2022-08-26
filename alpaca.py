@@ -1,14 +1,13 @@
 import json
 from dc import WEBHOOKS, file_from_text
 from helper import ascii_table
-from order import Order
 
 import alpaca_trade_api as tradeapi
 
 api = tradeapi.REST()
 
 
-def submit_order(order: Order):
+def submit_order(order):
     limit_price = round(order.price)
     WEBHOOKS[order.strategy].send(
         username="Alpaca",

@@ -4,7 +4,7 @@ import gsheet as gs
 
 from flask import Blueprint
 
-blueprint = Blueprint("error_handlers", __name__)
+err_h = Blueprint("error_handlers", __name__)
 
 
 class UnauthorizedRequest(werkzeug.exceptions.HTTPException):
@@ -12,7 +12,7 @@ class UnauthorizedRequest(werkzeug.exceptions.HTTPException):
     description = "Incorrect/missing credentials."
 
 
-@blueprint.app_errorhandler(UnauthorizedRequest)
+@err_h.app_errorhandler(UnauthorizedRequest)
 def handle_unauthorized_request(e):
     return e.description, e.code
 
@@ -25,7 +25,7 @@ class BadIncomingJSON(werkzeug.exceptions.HTTPException):
         self.json_str = json_str
 
 
-@blueprint.app_errorhandler(BadIncomingJSON)
+@err_h.app_errorhandler(BadIncomingJSON)
 def handle_bad_incoming_json(e):
     json_str = e.json_str
     gs.log_error("Unable to parse incoming JSON: {}".format(json_str))

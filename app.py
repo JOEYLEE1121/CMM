@@ -1,37 +1,38 @@
-from env import WEBHOOK_PASSPHRASE
 from flask import Flask, request
 import logging
+from error_handlers import err_h
+from candlepatterns.main import cp
+from relativestrengthindex.main import rsi
+from env import WEBHOOK_PASSPHRASE
 import json
-import dc
-import gsheet as gs
-import alpaca
-from order import Order
-from error_handlers import UnauthorizedRequest, BadIncomingJSON, blueprint
+from strategy import StrategyAlert
+from types import SimpleNamespace
+from error_handlers import UnauthorizedRequest, BadIncomingJSON
 
-logging.basicConfig(level=logging.DEBUG)
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
-app.register_blueprint(blueprint)
+app.register_blueprint(err_h)
+app.register_blueprint(cp, url_prefix="/cp")
+app.register_blueprint(rsi, url_prefix="/rsi")
 
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
+def parse_alert(data_str: str) -> StrategyAlert:
     try:
-        data = json.loads(request.data)
-        pwd = data["passphrase"]
-        order = Order(data)
+        data = json.loads(data_str, object_hook=lambda d: SimpleNamespace(**d))
+        pwd = data.passphrase
+        del data.passphrase
+        strat_alert = StrategyAlert(data)
     except:
-        raise BadIncomingJSON(request.data)
+        raise BadIncomingJSON(data_str)
 
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
 
-    gs.log_order(order)
-    dc.order_alert(order)
-
-    if order.do_trade:
-        alpaca.submit_order(order)
-
-    return "OK", 200
+    return strat_alert
 
 
+@app.before_request
+def hook():
+    request.strat_alert = parse_alert(request.data)

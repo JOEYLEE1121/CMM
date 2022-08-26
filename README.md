@@ -47,9 +47,12 @@ Remember to configure the environmental variables same as `.env` and additionall
 FLASK_APP=app.py
 FLASK_DEBUG=0
 ```
+
 Also note that there is no need to include the enclosing quotes `'` for `GCREDS` on the Heroku Config Vars section.
 
 ## Reference
+
+Example base JSON of a strategy alert from Trading View:
 
 ```json
 {
@@ -65,12 +68,11 @@ Also note that there is no need to include the enclosing quotes `'` for `GCREDS`
         "close": 19272.13,
         "volume": 0.0008
     },
-    "strategy": "CP",
+    "order_id": "x123y987",
     "position_size": 0.1,
     "order_action": "buy",
     "order_contracts": 1,
     "order_price": 19200,
-    "order_id": "BBandSE",
     "market_position": "long",
     "market_position_size": 0.1,
     "prev_market_position": "flat",
@@ -78,3 +80,23 @@ Also note that there is no need to include the enclosing quotes `'` for `GCREDS`
     "do_trade": false
 }
 ```
+
+Additional key-value pairs are added for different strategies:
+
+For Candle Pattern (Hanging Man):
+
+```json
+{
+    "strategy_name": "CP",
+    "candle_pattern": "Hanging Man"
+}
+```
+
+For RSI:
+
+```json
+{
+    "strategy_name": "RSI",
+}
+```
+
