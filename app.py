@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, abort
+from env import WEBHOOK_PASSPHRASE
+from flask import Flask, render_template, request
 import werkzeug
 import logging
 import json
@@ -9,55 +10,28 @@ from order import Order
 
 logging.basicConfig(level=logging.DEBUG)
 
-from env import WEBHOOK_PASSPHRASE
-
 app = Flask(__name__)
-
-import alpaca_trade_api as tradeapi
-
-api = tradeapi.REST()
-
-
-@app.route("/")
-def dashboard():
-    orders = api.list_orders()
-    return render_template("dashboard.html", alpaca_orders=orders)
-
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
     try:
         data = json.loads(request.data)
-    except:
-        raise BadIncomingJSON(request.data.decode("utf-8"))
-
-    data_str = json.dumps(data, indent=4)
-    logging.info(data_str)
-
-    try:
         pwd = data["passphrase"]
-        order_id = data["order_id"]
-        strat = data["strategy"]
-        sym = data["ticker"]
-        side = data["order_action"]
-        qty = data["order_contracts"]
-        price = data["order_price"]
-        do_trade = data["do_trade"]
+        order = Order(data)
     except:
-        raise BadIncomingJSON(data_str)
+        raise BadIncomingJSON(data)
 
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
 
-    order = Order(order_id, strat, side, qty, sym, price, data_str)
+    
     gs.log_order(order)
     dc.order_alert(order)
 
-    if do_trade:
+    if order.do_trade:
         alpaca.submit_order(order)
 
     return "OK", 200
-
 
 class UnauthorizedRequest(werkzeug.exceptions.HTTPException):
     code = 401
@@ -73,15 +47,16 @@ class BadIncomingJSON(werkzeug.exceptions.HTTPException):
     code = 400
     description = "Unable to parse incoming JSON."
 
-    def __init__(self, json):
-        self.json = json
+    def __init__(self, json_data):
+        self.json = json_data
 
 
 @app.errorhandler(BadIncomingJSON)
 def handle_bad_incoming_json(e):
-    gs.log_error("Unable to parse incoming JSON: {}".format(e.json))
+    json_str = json.dumps(e.json, indent=4)
+    gs.log_error("Unable to parse incoming JSON: {}".format(json_str))
     dc.TOAST.send(
         username="Error",
-        content=":warning: **BadIncomingJSON** ```json\n{}```".format(e.json),
+        content=":warning: **BadIncomingJSON** ```json\n{}```".format(json_str),
     )
     return e.description, e.code
