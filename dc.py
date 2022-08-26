@@ -2,6 +2,7 @@ import requests
 from discord import Webhook, RequestsWebhookAdapter, File
 from helper import ascii_table
 from io import StringIO
+from order import Order
 
 from env import (
     DISCORD_URL,
@@ -35,12 +36,12 @@ def file_from_text(text: str, filename: str) -> None:
         my_file = File(f, filename)
         return my_file
 
-def strategy_alert(strat: str, side: str, qty: float, sym: str, price: float, username: str) -> None:
-    WEBHOOKS[strat].send(
-        username=username,
+def order_alert(order: Order) -> None:
+    WEBHOOKS[order.strategy].send(
+        username=order.id,
         content=":bar_chart: **strategy triggered** ```{}```".format(
             ascii_table(
-                {"Symbol": sym, "Quantity": qty, "Side": side, "Price": price}
+                {"Symbol": order.symbol, "Quantity": order.quantity, "Side": order.side, "Price": order.price}
             )
         ),
     )

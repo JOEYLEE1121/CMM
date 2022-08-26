@@ -1,17 +1,20 @@
 from flask import Flask, render_template, request, abort
 import werkzeug
-import alpaca_trade_api as tradeapi
-import json
-from dc import WEBHOOKS, TOAST, strategy_alert, file_from_text
-from gsheet import log2gsheet
-from helper import ascii_table
 import logging
+import json
+import dc
+import gsheet as gs
+import alpaca
+from order import Order
 
 logging.basicConfig(level=logging.DEBUG)
 
 from env import WEBHOOK_PASSPHRASE
 
 app = Flask(__name__)
+
+import alpaca_trade_api as tradeapi
+
 api = tradeapi.REST()
 
 
@@ -33,55 +36,27 @@ def webhook():
 
     try:
         pwd = data["passphrase"]
+        order_id = data["order_id"]
         strat = data["strategy"]
         sym = data["ticker"]
         side = data["order_action"]
         qty = data["order_contracts"]
         price = data["order_price"]
         do_trade = data["do_trade"]
-        order_id = data["order_id"]
     except:
         raise BadIncomingJSON(data_str)
 
     if pwd != WEBHOOK_PASSPHRASE:
         raise UnauthorizedRequest()
 
-    log2gsheet(strat, side, qty, sym, price, order_id, data_str)
-    strategy_alert(strat, side, qty, sym, price, order_id)
+    order = Order(order_id, strat, side, qty, sym, price, data_str)
+    gs.log_order(order)
+    dc.order_alert(order)
 
     if do_trade:
-        limit_price = round(price)
-        WEBHOOKS[strat].send(
-            username="Alpaca",
-            content=":arrows_counterclockwise: **submitting order** ```{}```".format(
-                ascii_table(
-                    {
-                        "Symbol": sym,
-                        "Quantity": qty,
-                        "Side": side,
-                        "Limit price": limit_price,
-                    }
-                )
-            )
-        )
+        alpaca.submit_order(order)
 
-        try:
-            order = api.submit_order(sym, qty, side, "limit", "gtc", limit_price)
-        except tradeapi.rest.APIError as e:
-            err_msg = str(e)
-            WEBHOOKS[strat].send(
-                username="Alpaca",
-                content=":warning: **order submission failed** ```{}```".format(err_msg),
-            )
-            return err_msg, e.status_code
-
-        WEBHOOKS[strat].send(
-            username="Alpaca",
-            content=":white_check_mark: **order successfully submitted**",
-            file=file_from_text(json.dumps(order._raw, indent=4), filename="order.json"),
-        )
-
-    return "Ok.", 200
+    return "OK", 200
 
 
 class UnauthorizedRequest(werkzeug.exceptions.HTTPException):
@@ -104,5 +79,9 @@ class BadIncomingJSON(werkzeug.exceptions.HTTPException):
 
 @app.errorhandler(BadIncomingJSON)
 def handle_bad_incoming_json(e):
-    TOAST.send(username="Error", content=":warning: **BadIncomingJSON** ```json\n{}```".format(e.json))
+    gs.log_error("Unable to parse incoming JSON: {}".format(e.json))
+    dc.TOAST.send(
+        username="Error",
+        content=":warning: **BadIncomingJSON** ```json\n{}```".format(e.json),
+    )
     return e.description, e.code
