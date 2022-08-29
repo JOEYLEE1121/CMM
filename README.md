@@ -1,12 +1,12 @@
 # CMM
 
-This is a cloud instance, currently deployed onto Heroku. It has an endpoint which accepts incoming POST requests from Trading View alerts. It then log these alerts onto a Google Sheet, as well as sending webhook messages to Discord's API to send bot messages to corresponding channels. Additionally, it sends trade orders to Alpaca's paper trading API.
+Test suite for Trading View strategies. It has an endpoint which accepts incoming POST requests from Trading View alerts. It then log these alerts onto a Google Sheet, as well as sending webhook messages to Discord's API to send bot messages to corresponding channels. Additionally, it sends trade orders to Alpaca's paper trading API.
 
 ## Development
 
 ### Python Virtual Environment
 
-Create a `.cmm` virtual environment. Activate the environment, and then install required modules with `pip3 install -r requirements.txt`
+Create a `.ve` virtual environment. Activate the environment, and then install required modules with `pip3 install -r requirements.txt`
 
 ### Starting Flask
 
@@ -47,8 +47,6 @@ Remember to configure the environmental variables same as `.env` and additionall
 FLASK_APP=app.py
 FLASK_DEBUG=0
 ```
-
-Also note that there is no need to include the enclosing quotes `'` for `GCREDS` on the Heroku Config Vars section.
 
 ## Reference
 
@@ -96,7 +94,6 @@ For RSI:
 
 ```json
 {
-    "strategy_name": "RSI",
+    "strategy_name": "RSI"
 }
 ```
-
