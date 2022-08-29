@@ -3,6 +3,8 @@ from helper import timestamp
 import json
 import gspread
 
+from strategy import StrategyAlert
+
 gc = gspread.service_account_from_dict(json.loads(GCREDS))
 
 ss = gc.open_by_key(GSHEET_ID)
@@ -26,10 +28,25 @@ def log_error(error_msg):
 
 def log_cp(alert):
     cp.append_row(
-        [timestamp(), alert.order_id]
+        [
+            timestamp(),
+            alert.order_id,
+            alert.ticker,
+            alert.order_action,
+            alert.order_contracts,
+            alert.order_price,
+        ]
     )
 
-def log_rsi(alert):
+
+def log_rsi(alert: StrategyAlert):
     rsi.append_row(
-        [timestamp(), alert.order_id, alert.time]
+        [
+            timestamp(),
+            alert.order_id,
+            alert.ticker,
+            alert.order_action,
+            alert.order_contracts,
+            alert.order_price,
+        ]
     )

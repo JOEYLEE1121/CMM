@@ -33,8 +33,8 @@ class StrategyAlert:
         match self.strategy_name:
             case STRATEGY.CP:
                 self.strategy = CandlePattern(data.candle_pattern)
-            case STRATEGY.RSI:
-                self.strategy = RSI(data.rsi)
+            # case STRATEGY.RSI:
+                # self.strategy = RSI(data.rsi)
 
 
 class CandlePattern(Strategy):
