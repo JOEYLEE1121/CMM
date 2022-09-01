@@ -12,11 +12,6 @@ from error_handlers import UnauthorizedRequest, BadIncomingJSON
 
 logging.basicConfig(level=logging.INFO)
 
-app = Flask(__name__)
-app.register_blueprint(err_h)
-app.register_blueprint(cp, url_prefix="/cp")
-app.register_blueprint(rsi, url_prefix="/rsi")
-
 
 def parse_alert(data_str: str) -> StrategyAlert:
     try:
@@ -33,6 +28,14 @@ def parse_alert(data_str: str) -> StrategyAlert:
     return strat_alert
 
 
-@app.before_request
 def hook():
     request.strat_alert = parse_alert(request.data)
+
+
+cp.before_request(hook)
+rsi.before_request(hook)
+
+app = Flask(__name__)
+app.register_blueprint(err_h)
+app.register_blueprint(cp, url_prefix="/cp")
+app.register_blueprint(rsi, url_prefix="/rsi")
